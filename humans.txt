@@ -1,0 +1,20 @@
+# humanstxt.org/
+# The humans responsible & technology colophon
+
+# TEAM
+
+    <name>                          -- <role>                      -- <twitter>
+    Rúnar Berg Baugsson Sigríðarson -- Design and development      -- Don't tweet
+    Björn Sigríðarson Traustason    -- Fashion design              -- manisananimal
+    Ingi Kristján Sigurmarsson      -- Graphics                    --
+    Sigrún Hanna Ómarsdóttir        -- Graphics                    --
+    Sigurður Björn Teittsson        -- Osom                        -- siggibt
+
+# THANKS
+
+    <name>
+
+# TECHNOLOGY COLOPHON
+
+    HTML5, CSS3
+    jQuery, Modernizr

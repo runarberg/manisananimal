@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+        <title>Image Slider</title>
+        <style type="text/css">
+            h1 {
+                text-align: center;
+            }
+            a {
+                text-decoration: none;
+            }
+            figure.img_nav .wrap {
+                margin: 0 auto;
+                overflow: hidden;
+                position: relative;
+            }
+            figure.img_nav ul {
+                position: relative;
+                left: 0;
+                top: 0;
+                padding-left: 0;
+            }
+            figure.img_nav ul li {
+                float: left;
+                padding-left: 0;
+                margin: 0 5px;
+                list-style: none;
+            }
+            figure.img_nav .size_small {
+                width: 450px;
+                height: 356px;
+            }
+            figure.img_nav .size_large {
+                width: 900px;
+                height: 711px;
+            }
+            
+            figure.img_nav .controls {
+                margin: 0 auto;
+                width: 450px;
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Lookbook</h1>
+        <figure class="lookbook_fig img_nav">
+            <div class="wrap size_small">
+                <ul>
+                    <li><img class="size_small" src="img/pictures/lookbook/size_small/1.jpg" alt="Lookbook picture" /></li>
+                    <li><img class="size_small" src="img/pictures/lookbook/size_small/2.jpg" alt="Lookbook picture" /></li>
+                    <li><img class="size_small" src="img/pictures/lookbook/size_small/3.jpg" alt="Lookbook picture" /></li>
+                    <li><img class="size_small" src="img/pictures/lookbook/size_small/4.jpg" alt="Lookbook picture" /></li>
+                    <li><img class="size_small" src="img/pictures/lookbook/size_small/5.jpg" alt="Lookbook picture" /></li>
+                </ul>
+            </div>
+            <div class="controls">
+                <a href="#" class="prev">&lt;&mdash;«</a>
+                <i class="img_nr"></i>
+                <a href="#" class="next">»&mdash;&gt;</a>
+            </div>
+        </figure>
+    <script src="js/vendor/jquery-1.8.3.min.js"></script>
+    <script>
+        var toggleImgSize = function (imgId) {
+            var $imgId = $("." + imgId + "_fig");
+            var $imgWrap = $imgId.find(".wrap");
+            var $imgUl = $imgId.find("ul")
+            var $imgList = $imgId.find("ul > li");
+            
+            $imgWrap.click(function () {
+                if ( $(this).hasClass('size_large') ) {
+                    $imgId.find('.size_large').removeClass('size_large').addClass('size_small');
+                    
+                }
+                else if ( $(this).hasClass('size_small') ) {
+                    $imgId.find('.size_small').removeClass('size_small').addClass('size_large');
+                }
+                
+                // Change the source of the images
+                for (var i = 0; i < $imgList.length; i++) {
+                    var $img = $($imgList[i]).find('img'),
+                        oldImgSrc = $img.attr('src');
+                        
+                    $img.attr('src',
+                              oldImgSrc.replace(oldImgSrc.match(/size_small/) ?
+                                                "size_small" : "size_large",
+                                                oldImgSrc.match(/size_small/) ?
+                                                'size_large' : "size_small"))
+                }
+                
+                // recalculate the dimentions
+                setGalleryDim(imgId);
+            });
+        }
+        
+        
+        var totalImages = function ($gallery) {
+            return $gallery.find("ul > li").length;
+        }
+        var totalWidth = function ($gallery) {
+            return imageWidth($gallery) * totalImages($gallery);
+        }
+        var imageWidth = function ($gallery) {
+            return $gallery.find("ul > li:first").outerWidth(true);
+        }
+        
+        var setGalleryDim = function (gallery) {
+            var $gallery = $("." + gallery + "_fig");
+            var imgNr = typeof(storage) !== undefined && sessionStorage[gallery] ?
+                        parseInt(sessionStorage[gallery]) :
+                        1;
+                
+            $gallery.find("ul").width(totalWidth($gallery));
+            $gallery.find("ul").css({left: - ((imgNr - 1) * imageWidth($gallery))});
+            $gallery.find(".img_nr").text(''+imgNr);
+        }
+    
+        var navImg = function (gallery) {
+            var $gallery = $("." + gallery + "_fig");
+            
+            // Declare veriables
+            var imgNr = typeof(storage) !== undefined && sessionStorage[gallery] ?
+                        parseInt(sessionStorage[gallery]) :
+                        1;
+                
+            setGalleryDim(gallery);
+            
+            $gallery.find("a.prev").click(function () {
+                if (imgNr > 1
+                    && ! $gallery.find("ul").is(":animated") ) {
+                    
+                    $gallery.find("ul").animate({
+                        left: "+=" + imageWidth($gallery) + "px"
+                    });
+                    imgNr -= 1;
+                    $gallery.find(".img_nr").text(imgNr);
+                    sessionStorage[gallery] = ''+imgNr;
+                }
+                return false;
+            });
+            
+            $gallery.find("a.next").click(function () {
+                if (imgNr < totalImages($gallery)
+                    && ! $gallery.find("ul").is(":animated") ) {
+                    
+                    $gallery.find("ul").animate({
+                        left: "-=" + imageWidth($gallery) + "px"
+                    });
+                    imgNr += 1;
+                    $gallery.find(".img_nr").text(imgNr);
+                    sessionStorage[gallery] = ''+imgNr;
+                }
+                return false;
+            });
+        }
+        
+        $(document).ready(function () {
+        
+            navImg('lookbook');
+            toggleImgSize('lookbook');
+        
+        });
+    </script>
+    </body>
+</html>
